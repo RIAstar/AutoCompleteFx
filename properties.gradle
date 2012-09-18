@@ -1,0 +1,9 @@
+def props = new Properties();
+def userHome = System.getProperty 'user.home'
+
+new File(userHome + "/.gradle/global.properties").withInputStream { props.load(it) }
+props.each({
+    if (convention.plugins.flex && convention.plugins.flex.hasProperty(it.key))
+        convention.plugins.flex[it.key] = it.value
+    else ext[it.key] = it.value 
+})

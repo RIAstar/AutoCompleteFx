@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:rs="net.riastar.components.*"
+			   minWidth="955" minHeight="600" >
+	
+	<fx:Declarations>
+		<s:ArrayCollection id="dp">
+			<fx:String>one two three four</fx:String>
+			<fx:String>five six seven</fx:String>
+			<fx:String>eight nine ten</fx:String>
+			<fx:String>eleven twelve</fx:String>
+			<fx:String>thirteen fourteen</fx:String>
+			<fx:String>fifteen sixteen</fx:String>
+			<fx:String>seventeen</fx:String>
+			<fx:String>eightteen</fx:String>
+			<fx:String>nineteen twenty</fx:String>
+			<fx:String>twentyone</fx:String>
+			<fx:String>twentytwo</fx:String>
+		</s:ArrayCollection>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:HorizontalLayout />
+	</s:layout>
+	
+	<rs:AutoComplete dataProvider="{dp}" skinClass="spark.skins.spark.ComboBoxSkin" />
+	<s:ComboBox dataProvider="{dp}" />
+
+</s:Application>

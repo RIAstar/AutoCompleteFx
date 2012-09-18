@@ -1,0 +1,8 @@
+type = 'swf'
+
+mainClass = 'net.riastar.demo.AutoCompleteDemo'
+
+dependencies {
+	merged project(':autocomplete-fx')
+}
+

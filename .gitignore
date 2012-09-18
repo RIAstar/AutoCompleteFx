@@ -1,0 +1,9 @@
+.gradle
+*.as3proj
+.actionScriptProperties
+.flexLibProperties
+.project
+obj
+build
+bin
+
