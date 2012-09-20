@@ -1,9 +1,14 @@
 .gradle
 *.as3proj
+*.iml
 .actionScriptProperties
 .flexLibProperties
 .project
+.idea
 obj
 build
 bin
+out
+bin-debug
+bin-release
 
