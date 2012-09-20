@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:rs="net.riastar.components.*"
-			   minWidth="955" minHeight="600" >
+			   xmlns:rs="library://ns.riastar.net/flex"
+			   minWidth="955" minHeight="600">
+
+    <fx:Style source="defaults.css" />
 	
 	<fx:Declarations>
 		<s:ArrayCollection id="dp">
@@ -23,8 +25,15 @@
 	<s:layout>
 		<s:HorizontalLayout />
 	</s:layout>
-	
-	<rs:AutoComplete dataProvider="{dp}" skinClass="spark.skins.spark.ComboBoxSkin" />
+
+    <s:VGroup>
+        <rs:AutoComplete id="ac" dataProvider="{dp}" />
+        <s:Label text="{ac.selectedIndex}" />
+        <s:Label text="{ac.selectedIndices}" />
+        <s:Label text="{ac.selectedItem}" />
+        <s:Label text="{ac.selectedItems}" />
+    </s:VGroup>
+
 	<s:ComboBox dataProvider="{dp}" />
 
 </s:Application>

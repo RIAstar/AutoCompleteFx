@@ -1,0 +1,5 @@
+@namespace rs "library://ns.riastar.net/flex";
+
+rs|AutoComplete {
+    skinClass: ClassReference("net.riastar.skins.spark.AutoCompleteSkin");
+}

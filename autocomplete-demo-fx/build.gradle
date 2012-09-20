@@ -4,5 +4,6 @@ mainClass = 'net.riastar.demo.AutoCompleteDemo'
 
 dependencies {
 	merged project(':autocomplete-fx')
+    theme  project(':autocomplete-spark-fx')
 }
 
