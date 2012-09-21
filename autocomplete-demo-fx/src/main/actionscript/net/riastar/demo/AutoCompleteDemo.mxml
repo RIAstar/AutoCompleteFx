@@ -28,10 +28,21 @@
 
     <s:VGroup>
         <rs:AutoComplete id="ac" dataProvider="{dp}" />
-        <s:Label text="{ac.selectedIndex}" />
-        <s:Label text="{ac.selectedIndices}" />
-        <s:Label text="{ac.selectedItem}" />
-        <s:Label text="{ac.selectedItems}" />
+
+        <s:Form>
+            <s:FormItem label="selectedIndex">
+                <s:Label text="{ac.selectedIndex}" />
+            </s:FormItem>
+            <s:FormItem label="selectedIndices">
+                <s:Label text="{ac.selectedIndices}" />
+            </s:FormItem>
+            <s:FormItem label="selectedItem">
+                <s:Label text="{ac.selectedItem}" />
+            </s:FormItem>
+            <s:FormItem label="selectedItems">
+                <s:Label text="{ac.selectedItems}" />
+            </s:FormItem>
+        </s:Form>
     </s:VGroup>
 
 	<s:ComboBox dataProvider="{dp}" />
