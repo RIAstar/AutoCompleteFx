@@ -479,7 +479,7 @@ public class AutoComplete extends DropDownListBase {
     /**
      * Commit wrapped <code>textInput</code> properties.
      * Commit reset requests.
-     * 
+     *
      * @inheritDoc
      */
     override protected function commitProperties():void {
