@@ -1,5 +1,9 @@
 type = 'swc'
 
+def stylePath = projectDir.path + '/src/main/resources/'
+
 dependencies {
 	external project(':autocomplete-fx')
 }
+
+additionalCompilerOptions.add("-include-stylesheet=defaults.css,${stylePath}defaults.css")
