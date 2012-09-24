@@ -187,7 +187,8 @@ public class AutoComplete extends DropDownListBase {
     }
     public function set singleSelection(value:Boolean):void {
         _singleSelection = value;
-        invalidateSkinState();
+        setSelectedIndices(null, true);
+        if (selectionView) selectionView.refresh();
     }
 
     /**
