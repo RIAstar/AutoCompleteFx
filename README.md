@@ -6,14 +6,16 @@ AutoCompleteFx works exactly as you would expect from a List, meaning the [selec
 
 For consistency with the Spark theme, AutoCompleteFx' default skin looks exactly like a regular ComboBox', except a second `List` was added to optionally display the selected items.
 
-**Features:** (planned, as it's still in an early stage)
+###Features
  - single/multiple select
  - matches multiple words in the search query
  - fully compatible with other List-like components
+
+###Planned features
  - selection list can be defined outside the component (will override the one in the default skin)
  - optionally sort selection list in the same order as the `dataProvider` (default = selection order)
  - highlight matched text
  - optional automatic creation of items when submitting items that don't exist in the `dataProvider`
- - ItemRenderer implementations
+ - GridItemRenderer implementation
  - ...
 
