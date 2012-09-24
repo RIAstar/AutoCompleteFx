@@ -463,7 +463,7 @@ public class AutoComplete extends DropDownListBase {
         switch (code) {
             case Keyboard.ENTER:
                 setSelectedIndices(calculateSelectedIndices(userProposedSelectedIndex, false, false), true);
-                if (!_singleSelection || selectedIndex == -1) reset();
+                if (!_singleSelection || !suggestionView.length) reset();
                 break;
             case Keyboard.ESCAPE:
                 reset();
