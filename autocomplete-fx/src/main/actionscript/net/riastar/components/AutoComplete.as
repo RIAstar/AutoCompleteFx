@@ -463,7 +463,7 @@ public class AutoComplete extends DropDownListBase {
         switch (code) {
             case Keyboard.ENTER:
                 setSelectedIndices(calculateSelectedIndices(userProposedSelectedIndex, false, false), true);
-                if (!_singleSelection) reset();
+                if (!_singleSelection || selectedIndex == -1) reset();
                 break;
             case Keyboard.ESCAPE:
                 reset();
@@ -523,8 +523,8 @@ public class AutoComplete extends DropDownListBase {
      * @return Whether the item can be suggested or not.
      */
     protected function canSuggest(item:*):Boolean {
-        if (!numSearchTerms) return true;
         if (selectedItems.indexOf(item) != -1) return false;
+        if (!numSearchTerms) return true;
 
         var label:String = itemToLabel(item);
         var count:int = 0;
@@ -689,9 +689,8 @@ public class AutoComplete extends DropDownListBase {
             if (selectedIndex > -1) {
                 textInput.text = itemToLabel(selectedItem);
                 textInput.selectAll();
-                processText(textInput.text);
+                processText("");
             }
-            else reset();
         }
         else {
             if (selectionView) selectionView.refresh();
