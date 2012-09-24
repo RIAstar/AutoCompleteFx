@@ -1,50 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:rs="library://ns.riastar.net/flex"
-			   minWidth="955" minHeight="600">
+<!--
+  - Copyright (c) 2012 Maxime Cowez a.k.a. RIAstar.
+  -
+  - Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+  - documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+  - rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+  - permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  -
+  - The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+  - Software.
+  -
+  - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+  - WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+  - OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  - OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:demo="net.riastar.demo.*"
+               minWidth="955" minHeight="600">
 
     <fx:Style source="defaults.css" />
 	
-	<fx:Declarations>
-		<s:ArrayCollection id="dp">
-			<fx:String>one two three four</fx:String>
-			<fx:String>five six seven</fx:String>
-			<fx:String>eight nine ten</fx:String>
-			<fx:String>eleven twelve</fx:String>
-			<fx:String>thirteen fourteen</fx:String>
-			<fx:String>fifteen sixteen</fx:String>
-			<fx:String>seventeen</fx:String>
-			<fx:String>eightteen</fx:String>
-			<fx:String>nineteen twenty</fx:String>
-			<fx:String>twentyone</fx:String>
-			<fx:String>twentytwo</fx:String>
-		</s:ArrayCollection>
-	</fx:Declarations>
+    <s:states>
+        <s:State name="default" />
+        <s:State name="singleSelect" />
+    </s:states>
 	
 	<s:layout>
 		<s:HorizontalLayout />
 	</s:layout>
 
-    <s:VGroup>
-        <rs:AutoComplete id="ac" dataProvider="{dp}" />
+    <s:List id="demoList" height="100%" requireSelection="true"
+            change="currentState = states[demoList.selectedIndex].name">
 
-        <s:Form>
-            <s:FormItem label="selectedIndex">
-                <s:Label text="{ac.selectedIndex}" />
-            </s:FormItem>
-            <s:FormItem label="selectedIndices">
-                <s:Label text="{ac.selectedIndices}" />
-            </s:FormItem>
-            <s:FormItem label="selectedItem">
-                <s:Label text="{ac.selectedItem}" />
-            </s:FormItem>
-            <s:FormItem label="selectedItems">
-                <s:Label text="{ac.selectedItems}" />
-            </s:FormItem>
-        </s:Form>
-    </s:VGroup>
+        <s:ArrayList>
+            <fx:String>Default (multi-select)</fx:String>
+            <fx:String>Single select</fx:String>
+        </s:ArrayList>
+    </s:List>
 
-	<s:ComboBox dataProvider="{dp}" />
+    <demo:DefaultDemo includeIn="default" width="100%" height="100%" />
+    <demo:SingleSelectDemo includeIn="singleSelect" width="100%" height="100%" />
 
 </s:Application>

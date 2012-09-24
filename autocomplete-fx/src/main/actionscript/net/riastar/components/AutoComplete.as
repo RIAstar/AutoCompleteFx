@@ -17,12 +17,12 @@
 
 package net.riastar.components {
 
+import flash.display.DisplayObject;
+import flash.display.InteractiveObject;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 
-import flashx.textLayout.operations.CutOperation;
-import flashx.textLayout.operations.DeleteTextOperation;
 import flashx.textLayout.operations.FlowOperation;
 
 import mx.collections.IList;
@@ -43,6 +43,60 @@ import spark.events.TextOperationEvent;
 
 
 use namespace mx_internal;
+
+
+/* -------------- */
+/* --- styles --- */
+/* -------------- */
+
+/**
+ *  Bottom inset, in pixels, for the text in the prompt area of the control.
+ *
+ *  @default 3
+ */
+[Style(name="paddingBottom", type="Number", format="Length", inherit="no")]
+
+/**
+ *  Left inset, in pixels, for the text in the prompt area of the control.
+ *
+ *  @default 3
+ */
+[Style(name="paddingLeft", type="Number", format="Length", inherit="no")]
+
+/**
+ *  Right inset, in pixels, for the text in the prompt area of the control.
+ *
+ *  @default 3
+ */
+[Style(name="paddingRight", type="Number", format="Length", inherit="no")]
+
+/**
+ *  Top inset, in pixels, for the text in the prompt area of the control.
+ *
+ *  @default 5
+ */
+[Style(name="paddingTop", type="Number", format="Length", inherit="no")]
+
+
+/* ------------------- */
+/* --- skin states --- */
+/* ------------------- */
+
+/**
+ * Same as the <code>normal</code> state, but with a selection to be shown.
+ */
+[SkinState("normalWithSelection")]
+
+/**
+ * Same as the <code>open</code> state, but with a selection to be shown.
+ */
+[SkinState("openWithSelection")]
+
+/**
+ * Same as the <code>disabled</code> state, but with a selection to be shown.
+ */
+[SkinState("disabledWithSelection")]
+
 
 /**
  * A Spark implementation of an AutoComplete component.
@@ -99,6 +153,7 @@ public class AutoComplete extends DropDownListBase {
     }
     override public function set dataProvider(value:IList):void {
         if (originalData) originalData.removeEventListener(CollectionEvent.COLLECTION_CHANGE, originalDataChangeHandler);
+        if (selectionView) selectionView.removeEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler);
         originalData = value;
 
         if (value) {
@@ -110,12 +165,14 @@ public class AutoComplete extends DropDownListBase {
             initializeSelectionList();
 
             originalData.addEventListener(CollectionEvent.COLLECTION_CHANGE, originalDataChangeHandler, false, 0, true);
+            selectionView.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler, false, 0, true);
         }
         else suggestionView = null;
 
         super.dataProvider = suggestionView;
     }
 
+    private var _singleSelection:Boolean;
     /**
      * By default <code>AutoComplete</code> allows the user to select multiple items.
      * Set this property to <code>true</code> if you want only one item to be selected at a time.
@@ -125,7 +182,13 @@ public class AutoComplete extends DropDownListBase {
      *
      * @default false
      */
-    public var singleSelection:Boolean;
+    public function get singleSelection():Boolean {
+        return _singleSelection;
+    }
+    public function set singleSelection(value:Boolean):void {
+        _singleSelection = value;
+        invalidateSkinState();
+    }
 
     /**
      * Have to hack it this way because <code>DropDownListBase</code> doesn't allow setting <code>allowMultipleSelection</code>,
@@ -263,20 +326,23 @@ public class AutoComplete extends DropDownListBase {
     /* ---------------------- */
 
     /**
-     * When the <code>textInput</code> gets focus, set the flag.
+     * When the <code>textInput</code> gets focus, set the flag and select all the text.
      *
      * @param event
      */
     private function textInputFocusInHandler(event:FocusEvent):void {
         isTextInputInFocus = true;
+        textInput.selectAll();
     }
 
     /**
-     * When the <code>textInput</code> loses focus, unset the flag.
+     * When the <code>textInput</code> loses focus, unset the flag and remove invalid user input.
+     *
      * @param event
      */
     private function textInputFocusOutHandler(event:FocusEvent):void {
         isTextInputInFocus = false;
+        if (!_singleSelection || selectedIndex == -1) reset();
     }
 
     /**
@@ -321,6 +387,16 @@ public class AutoComplete extends DropDownListBase {
     private function originalDataChangeHandler(event:CollectionEvent):void {
         if (suggestionView) suggestionView.refresh();
         if (selectionView) selectionView.refresh();
+    }
+
+    /**
+     * When the selection changes, invalidate the skin state.
+     * TODO remove the necessity for 'callLater' (because the 'selectionList' is refreshed in 'commitSelection')
+     *
+     * @param event
+     */
+    private function selectionChangeHandler(event:CollectionEvent):void {
+        callLater(invalidateSkinState);
     }
 
     /**
@@ -387,6 +463,7 @@ public class AutoComplete extends DropDownListBase {
         switch (code) {
             case Keyboard.ENTER:
                 setSelectedIndices(calculateSelectedIndices(userProposedSelectedIndex, false, false), true);
+                if (!_singleSelection) reset();
                 break;
             case Keyboard.ESCAPE:
                 reset();
@@ -401,12 +478,9 @@ public class AutoComplete extends DropDownListBase {
      * @param operation The text operation to be processed.
      */
     protected function processTextOperation(operation:FlowOperation):void {
-        if (operation is DeleteTextOperation || operation is CutOperation)
-            highlightFirst();
-        else {
-            if (!isDropDownOpen) openDropDown();
-            processText(textInput.text);
-        }
+        if (!isDropDownOpen) openDropDown();
+        if (_singleSelection && selectedIndex > -1) setSelectedIndices(null, true);
+        processText(textInput.text);
     }
 
     /**
@@ -416,9 +490,13 @@ public class AutoComplete extends DropDownListBase {
      */
     protected function processText(text:String):void {
         if (!text) text = "";
+        text = StringUtil.trim(text);
 
-        searchTerms = Vector.<String>(StringUtil.trim(text).split(/\s+/g));
-        numSearchTerms = searchTerms.length;
+        if (text == "") numSearchTerms = 0;
+        else {
+            searchTerms = Vector.<String>(text.split(/\s+/g));
+            numSearchTerms = searchTerms.length;
+        }
 
         if (suggestionView) suggestionView.refresh();
     }
@@ -430,6 +508,7 @@ public class AutoComplete extends DropDownListBase {
         //We only set a flag here: the actual clearing happens in 'commitProperties()'
         userProposedSelectedIndex = -1;
         markedForReset = true;
+        if (_singleSelection && selectedIndex > -1) setSelectedIndices(null, true);
         invalidateProperties();
     }
 
@@ -444,6 +523,7 @@ public class AutoComplete extends DropDownListBase {
      * @return Whether the item can be suggested or not.
      */
     protected function canSuggest(item:*):Boolean {
+        if (!numSearchTerms) return true;
         if (selectedItems.indexOf(item) != -1) return false;
 
         var label:String = itemToLabel(item);
@@ -480,11 +560,14 @@ public class AutoComplete extends DropDownListBase {
      */
     override protected function calculateSelectedIndices(index:int, shiftKey:Boolean, ctrlKey:Boolean):Vector.<int> {
         //don't add negative indices
-        if (index < 0) return selectedIndices;
+        if (index < 0 || !suggestionView.length) return selectedIndices;
 
         //don't add indices that are already selected
         var originalDataIndex:int = originalData.getItemIndex(suggestionView.getItemAt(index));
         if (selectedIndices.indexOf(originalDataIndex) != -1) return selectedIndices;
+
+        //in single selection mode, just return a Vector with one index
+        if (singleSelection) return Vector.<int>([originalDataIndex]);
 
         //clone the Vector to force a refresh of 'selectedIndices'
         var clone:Vector.<int> = Vector.<int>(ObjectUtil.copy(selectedIndices));
@@ -541,6 +624,22 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
+     * Automatically set the focus on the <code>textInput</code>.
+     */
+    override public function setFocus():void {
+        if (stage && textInput) stage.focus = textInput.textDisplay as InteractiveObject;
+    }
+
+    /**
+     * Need to override this if we want the focus border to be drawn in combination with our implementation of <code>setFocus()</code>.
+     *
+     * @inheritDoc
+     */
+    override protected function isOurFocus(target:DisplayObject):Boolean {
+        return textInput && target == textInput.textDisplay;
+    }
+
+    /**
      * Prevent the default behaviour of <code>DropDownListBase</code> to automatically select the item
      * that starts with what the user typed.
      *
@@ -584,13 +683,54 @@ public class AutoComplete extends DropDownListBase {
      */
     override protected function commitSelection(dispatchChangedEvents:Boolean = true):Boolean {
         var committed:Boolean = super.commitSelection(dispatchChangedEvents);
+        if (!committed) return false;
 
-        if (committed) {
+        if (_singleSelection) {
+            if (selectedIndex > -1) {
+                textInput.text = itemToLabel(selectedItem);
+                textInput.selectAll();
+                processText(textInput.text);
+            }
+            else reset();
+        }
+        else {
             if (selectionView) selectionView.refresh();
             reset();
         }
 
-        return committed;
+        return true;
+    }
+
+    override protected function getCurrentSkinState():String {
+        return super.getCurrentSkinState() + (!singleSelection && selectionView && selectionView.length ? "WithSelection" : "");
+    }
+
+
+    /* ------------------- */
+    /* --- destruction --- */
+    /* ------------------- */
+
+    override protected function partRemoved(partName:String, instance:Object):void {
+        switch (instance) {
+            case textInput:
+                destroyTextInput();
+                break;
+            case selectionList:
+                destroySelectionList();
+                break;
+        }
+
+        super.partRemoved(partName, instance);
+    }
+
+    protected function destroyTextInput():void {
+        textInput.removeEventListener(TextOperationEvent.CHANGE, textInputChangeHandler);
+        textInput.removeEventListener(FocusEvent.FOCUS_IN, textInputFocusInHandler, true);
+        textInput.removeEventListener(FocusEvent.FOCUS_OUT, textInputFocusOutHandler, true);
+    }
+
+    protected function destroySelectionList():void {
+        selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
     }
 
 }
