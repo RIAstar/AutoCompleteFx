@@ -33,11 +33,12 @@ import mx.events.FlexEvent;
 import mx.utils.ObjectUtil;
 import mx.utils.StringUtil;
 
+import spark.components.List;
 import spark.components.RichEditableText;
 import spark.components.supportClasses.DropDownListBase;
-import spark.components.supportClasses.ListBase;
 import spark.components.supportClasses.SkinnableTextBase;
 import spark.events.DropDownEvent;
+import spark.events.IndexChangeEvent;
 import spark.events.TextOperationEvent;
 
 
@@ -64,7 +65,7 @@ public class AutoComplete extends DropDownListBase {
     /**
      * Optional skin part that displays the selected items.
      */
-    public var selectionList:ListBase;
+    public var selectionList:List;
 
 
     /* ------------------------- */
@@ -83,6 +84,11 @@ public class AutoComplete extends DropDownListBase {
     private var suggestionView:ListCollectionView;
 
     /**
+     * A wrapper around the <code>originalData</code> that filters out selected items to be displayed in the <code>selectionList</code>.
+     */
+    private var selectionView:ListCollectionView;
+
+    /**
      * The data that is externally set is only used internally. We provide the dropdown List with a wrapper
      * that filters out suggestions to be displayed in it.
      *
@@ -98,6 +104,11 @@ public class AutoComplete extends DropDownListBase {
         if (value) {
             suggestionView = new ListCollectionView(value);
             suggestionView.filterFunction = canSuggest;
+
+            selectionView = new ListCollectionView(value);
+            selectionView.filterFunction = isSelected;
+            initializeSelectionList();
+
             originalData.addEventListener(CollectionEvent.COLLECTION_CHANGE, originalDataChangeHandler, false, 0, true);
         }
         else suggestionView = null;
@@ -218,12 +229,30 @@ public class AutoComplete extends DropDownListBase {
         invalidateProperties();
     }
 
+    /**
+     * Sets the dataProvider and refreshes it immediately.
+     * Track user selection.
+     */
+    protected function initializeSelectionList():void {
+        if (!selectionList) return;
+
+        selectionList.dataProvider = selectionView;
+        selectionList.focusEnabled = false;
+        selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
+        selectionList.addEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
+
+        selectionView.refresh();
+    }
+
     override protected function partAdded(partName:String, instance:Object):void {
         super.partAdded(partName, instance);
 
         switch (instance) {
             case textInput:
                 initializeTextInput();
+                break;
+            case selectionList:
+                initializeSelectionList();
                 break;
         }
     }
@@ -291,6 +320,16 @@ public class AutoComplete extends DropDownListBase {
      */
     private function originalDataChangeHandler(event:CollectionEvent):void {
         if (suggestionView) suggestionView.refresh();
+        if (selectionView) selectionView.refresh();
+    }
+
+    /**
+     * When an item is selected in the <code>selectionList</code> we remove that item from the <code>selectedIndices</code>.
+     *
+     * @param event
+     */
+    private function selectionIndexChangeHandler(event:IndexChangeEvent):void {
+        if (event.newIndex != -1) removeSelectedIndex(event.newIndex);
     }
 
     /**
@@ -347,11 +386,9 @@ public class AutoComplete extends DropDownListBase {
     protected function processKey(code:uint):void {
         switch (code) {
             case Keyboard.ENTER:
-                trace("processKey ENTER");
                 setSelectedIndices(calculateSelectedIndices(userProposedSelectedIndex, false, false), true);
                 break;
             case Keyboard.ESCAPE:
-                trace("processKey ESCAPE");
                 reset();
                 break;
         }
@@ -403,11 +440,11 @@ public class AutoComplete extends DropDownListBase {
      *     <li>an item's label representation must contain all the words from the user input</li>
      * </ul>
      *
-     * @param item  The item to be validated.
+     * @param item The item to be validated.
      * @return Whether the item can be suggested or not.
      */
     protected function canSuggest(item:*):Boolean {
-        if (selectedItems && selectedItems.indexOf(item) != -1) return false;
+        if (selectedItems.indexOf(item) != -1) return false;
 
         var label:String = itemToLabel(item);
         var count:int = 0;
@@ -422,11 +459,21 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
+     * The <code>filterFunction</code> for the <code>selectionList</code>.
+     *
+     * @param item The item to be validated.
+     * @return Whether the item can be shown in the <code>selectionList</code> or not.
+     */
+    protected function isSelected(item:*):Boolean {
+        return selectedItems.indexOf(item) != -1;
+    }
+
+    /**
      * We completely override how the selected indices are calculated:
      * we take the current <code>selectedIndices</code> and add the provided <code>index</code> to it.
      * (The default behaviour is much more complex and depends on the Ctrl and Shift keys)
      *
-     * @param index     The index of the item that wants to be added to the selection.
+     * @param index     The index of the item that is being added to the selection.
      * @param shiftKey  <strong>ignored</strong>
      * @param ctrlKey   <strong>ignored</strong>
      * @return The updated item indices that the new selection will be committed to.
@@ -442,18 +489,46 @@ public class AutoComplete extends DropDownListBase {
         //clone the Vector to force a refresh of 'selectedIndices'
         var clone:Vector.<int> = Vector.<int>(ObjectUtil.copy(selectedIndices));
         clone.push(originalDataIndex);
+        clone.sort(compareOriginalIndices);
         return clone;
     }
 
     /**
-     * Whenever the selection changes, reset the user input.
+     * Used to sort the <code>selectedIndices</code> in the same order as the <code>originalData</code>.
      *
-     * @private
-     * @inheritDoc
+     * @param a The first <code>originalData</code> index to compare.
+     * @param b The second <code>originalData</code> index to compare.
+     * @return 0 if <code>a == b</code>; a positive Number if <code>a > b</code>; a negative Number if <code>b > a</code>
      */
-    override mx_internal function setSelectedIndices(value:Vector.<int>, dispatchChangeEvent:Boolean = false, changeCaret:Boolean = true):void {
-        super.setSelectedIndices(value, dispatchChangeEvent, changeCaret);
-        reset();
+    protected static function compareOriginalIndices(a:int, b:int):Number {
+        return a - b;
+    }
+
+    /**
+     * Removes the provided index from the <code>selectionList</code>.
+     *
+     * @param index The index to be removed.
+     */
+    protected function removeSelectedIndex(index:int):void {
+        selectionList.selectedIndices = null; //don't do `selectedIndex = -1`: it will be overridden internally
+        setSelectedIndices(calculateSelectedIndicesAfterRemoval(index), true);
+    }
+
+    /**
+     * Calculates the selected indices after an index has been removed:
+     * we take the current <code>selectedIndices</code> and remove the provided <code>index</code> from it.
+     *
+     * @param index The index of the item that is being removed from the selection.
+     * @return The updated item indices that the new selection will be committed to.
+     */
+    protected function calculateSelectedIndicesAfterRemoval(index:int):Vector.<int> {
+        //don't remove negative indices
+        if (index < 0) return selectedIndices;
+
+        //clone the Vector to force a refresh of 'selectedIndices'
+        var clone:Vector.<int> = Vector.<int>(ObjectUtil.copy(selectedIndices));
+        clone.splice(index, 1);
+        return clone;
     }
 
     /**
@@ -462,7 +537,7 @@ public class AutoComplete extends DropDownListBase {
      * @private
      */
     override mx_internal function changeHighlightedSelection(newIndex:int, scrollToTop:Boolean = false):void {
-        if (dataGroup) super.changeHighlightedSelection(newIndex, scrollToTop);
+        if (dataGroup && isDropDownOpen) super.changeHighlightedSelection(newIndex, scrollToTop);
     }
 
     /**
@@ -500,6 +575,22 @@ public class AutoComplete extends DropDownListBase {
 
             markedForReset = false;
         }
+    }
+
+    /**
+     * Whenever the selection changes, update the <code>selectionView</code> and reset the user input.
+     *
+     * @inheritDoc
+     */
+    override protected function commitSelection(dispatchChangedEvents:Boolean = true):Boolean {
+        var committed:Boolean = super.commitSelection(dispatchChangedEvents);
+
+        if (committed) {
+            if (selectionView) selectionView.refresh();
+            reset();
+        }
+
+        return committed;
     }
 
 }
