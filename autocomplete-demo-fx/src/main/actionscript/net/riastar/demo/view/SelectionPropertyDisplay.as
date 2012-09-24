@@ -20,28 +20,14 @@
  */
 package net.riastar.demo.view {
 
+import spark.components.List;
 import spark.components.supportClasses.SkinnableComponent;
 
 
-public class PropertyPanel extends SkinnableComponent {
+public class SelectionPropertyDisplay extends SkinnableComponent {
 
     [Bindable]
-    public var singleSelection:Boolean;
-
-    [Bindable]
-    public var maxChars:int = 0;
-
-    [Bindable]
-    public var prompt:String;
-
-    private var _restrict:String;
-    [Bindable]
-    public function get restrict():String {
-        return _restrict;
-    }
-    public function set restrict(value:String):void {
-        _restrict = value == "" ? null : value;
-    }
+    public var list:List;
 
 }
 

@@ -18,30 +18,61 @@
 
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
-               xmlns:demo="net.riastar.demo.*"
+               xmlns:rs="library://ns.riastar.net/flex"
+               xmlns:v="net.riastar.demo.view.*"
                minWidth="955" minHeight="600">
 
-    <fx:Style source="defaults.css" />
-	
-    <s:states>
-        <s:State name="default" />
-        <s:State name="singleSelect" />
-    </s:states>
-	
-	<s:layout>
-		<s:HorizontalLayout />
-	</s:layout>
+    <fx:Style source="defaults.css"/>
 
-    <s:List id="demoList" height="100%" requireSelection="true"
-            change="currentState = states[demoList.selectedIndex].name">
+    <fx:Declarations>
+        <s:ArrayCollection id="dp">
+            <fx:String>one two three four</fx:String>
+            <fx:String>five six seven</fx:String>
+            <fx:String>eight nine ten</fx:String>
+            <fx:String>eleven twelve</fx:String>
+            <fx:String>thirteen fourteen</fx:String>
+            <fx:String>fifteen sixteen</fx:String>
+            <fx:String>seventeen</fx:String>
+            <fx:String>eightteen</fx:String>
+            <fx:String>nineteen twenty</fx:String>
+            <fx:String>twentyone</fx:String>
+            <fx:String>twentytwo</fx:String>
+        </s:ArrayCollection>
+    </fx:Declarations>
 
-        <s:ArrayList>
-            <fx:String>Default (multi-select)</fx:String>
-            <fx:String>Single select</fx:String>
-        </s:ArrayList>
-    </s:List>
+    <s:layout>
+        <s:HorizontalLayout/>
+    </s:layout>
 
-    <demo:DefaultDemo includeIn="default" width="100%" height="100%" />
-    <demo:SingleSelectDemo includeIn="singleSelect" width="100%" height="100%" />
+    <v:PropertyPanel id="properties" skinClass="net.riastar.demo.skin.PropertyPanelSkin"/>
+
+    <s:Line height="100%">
+        <s:stroke>
+            <s:SolidColorStroke color="0xdddddd"/>
+        </s:stroke>
+    </s:Line>
+
+    <s:VGroup width="100%" height="100%" gap="25" paddingLeft="25" paddingRight="25" paddingTop="25" paddingBottom="25">
+        <s:Label text="AutoCompleteFx" fontSize="18" fontWeight="bold"/>
+
+        <s:Line width="100%">
+            <s:stroke>
+                <s:SolidColorStroke color="0xdddddd"/>
+            </s:stroke>
+        </s:Line>
+
+        <s:HGroup>
+            <rs:AutoComplete id="ac" dataProvider="{dp}"
+                             singleSelection="{properties.singleSelection}"
+                             maxChars="{properties.maxChars}"
+                             prompt="{properties.prompt}"
+                             restrict="{properties.restrict}"/>
+
+            <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin" />
+        </s:HGroup>
+
+        <v:CodeArea properties="{properties}" width="100%" height="50%"
+                    fontFamily="Courier new" color="0xffffff" contentBackgroundColor="0x272822" />
+    </s:VGroup>
 
 </s:Application>

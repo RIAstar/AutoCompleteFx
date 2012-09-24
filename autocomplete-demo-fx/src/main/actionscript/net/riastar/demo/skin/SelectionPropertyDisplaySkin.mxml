@@ -20,38 +20,24 @@
         xmlns:s="library://ns.adobe.com/flex/spark">
 
     <fx:Metadata>
-        [HostComponent("net.riastar.demo.view.PropertyPanel")]
+        [HostComponent("net.riastar.demo.view.SelectionPropertyDisplay")]
     </fx:Metadata>
 
-    <fx:Declarations>
-        <s:RadioButtonGroup id="singleSelectionRadio" selectedValue="@{hostComponent.singleSelection}" />
-    </fx:Declarations>
+    <s:Form top="-18">
+        <s:FormHeading label="Properties"/>
 
-    <s:layout>
-        <s:VerticalLayout gap="15" paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15"/>
-    </s:layout>
-
-    <s:VGroup>
-        <s:Label text="singleSelection" fontWeight="bold"/>
-        <s:HGroup>
-            <s:RadioButton label="true" value="{true}" groupName="singleSelectionRadio"/>
-            <s:RadioButton label="false" value="{false}" groupName="singleSelectionRadio"/>
-        </s:HGroup>
-    </s:VGroup>
-
-    <s:VGroup>
-        <s:Label text="maxChars" fontWeight="bold"/>
-        <s:NumericStepper minimum="0" value="@{hostComponent.maxChars}" />
-    </s:VGroup>
-
-    <s:VGroup>
-        <s:Label text="prompt" fontWeight="bold"/>
-        <s:TextInput text="@{hostComponent.prompt}" />
-    </s:VGroup>
-
-    <s:VGroup>
-        <s:Label text="restrict" fontWeight="bold"/>
-        <s:TextInput text="@{hostComponent.restrict}" />
-    </s:VGroup>
+        <s:FormItem label="selectedIndex">
+            <s:Label text="{hostComponent.list.selectedIndex}"/>
+        </s:FormItem>
+        <s:FormItem label="selectedIndices">
+            <s:Label text="{hostComponent.list.selectedIndices}"/>
+        </s:FormItem>
+        <s:FormItem label="selectedItem">
+            <s:Label text="{hostComponent.list.selectedItem}"/>
+        </s:FormItem>
+        <s:FormItem label="selectedItems">
+            <s:Label text="{hostComponent.list.selectedItems}"/>
+        </s:FormItem>
+    </s:Form>
 
 </s:Skin>
