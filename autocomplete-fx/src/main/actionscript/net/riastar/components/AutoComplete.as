@@ -554,9 +554,10 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * The <code>filterFunction</code> for the suggestion list. There are two rules:
+     * The <code>filterFunction</code> for the suggestion list. There are three rules:
      * <ul>
      *     <li>already selected items are no longer suggested</li>
+     *     <li>if there is no user input, all items can be suggested (except the ones that are already selected)</li>
      *     <li>an item's label representation must contain all the words from the user input</li>
      * </ul>
      *
@@ -564,9 +565,13 @@ public class AutoComplete extends DropDownListBase {
      * @return Whether the item can be suggested or not.
      */
     protected function canSuggest(item:*):Boolean {
+        //filter out already selected items
         if (selectedItems.indexOf(item) != -1) return false;
+
+        //show all remaining items when there is no user input
         if (!numSearchTerms) return true;
 
+        //match all the words from the user input
         var label:String = itemToLabel(item);
         var count:int = 0;
 
@@ -752,6 +757,10 @@ public class AutoComplete extends DropDownListBase {
         return true;
     }
 
+    /**
+     * @return <code>DropDownListBase</code>'s current skin state (<code>normal,open,disabled</code>),
+     * appended with <code>"WithSelection"</code> if there are any selected items in multi-select mode.
+     */
     override protected function getCurrentSkinState():String {
         return super.getCurrentSkinState() + (!singleSelection && selectionView && selectionView.length ? "WithSelection" : "");
     }
@@ -774,12 +783,18 @@ public class AutoComplete extends DropDownListBase {
         super.partRemoved(partName, instance);
     }
 
+    /**
+     * Stop tracking text changes and focus events in the <code>textInput</code>.
+     */
     protected function destroyTextInput():void {
         textInput.removeEventListener(TextOperationEvent.CHANGE, textInputChangeHandler);
         textInput.removeEventListener(FocusEvent.FOCUS_IN, textInputFocusInHandler, true);
         textInput.removeEventListener(FocusEvent.FOCUS_OUT, textInputFocusOutHandler, true);
     }
 
+    /**
+     * Stop tracking user selection.
+     */
     protected function destroySelectionList():void {
         selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
     }
