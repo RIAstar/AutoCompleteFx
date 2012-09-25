@@ -15,53 +15,15 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package net.riastar.components {
+
 /**
  * @author RIAstar
  */
-package net.riastar.demo.view {
+public interface ISuggestionRenderer {
 
-import spark.components.supportClasses.SkinnableComponent;
-
-
-public class PropertyPanel extends SkinnableComponent {
-
-    //properties
-
-    [Bindable]
-    public var singleSelection:Boolean;
-
-    [Bindable]
-    public var maxChars:int = 0;
-
-    [Bindable]
-    public var prompt:String;
-
-    private var _restrict:String;
-    [Bindable]
-    public function get restrict():String {
-        return _restrict;
-    }
-    public function set restrict(value:String):void {
-        _restrict = value == "" ? null : value;
-    }
-
-
-    //styles
-
-    [Bindable]
-    public var matchColor:uint = 0xff0000;
-
-    [Bindable]
-    public var matchFontStyle:Object = "normal";
-
-    [Bindable]
-    public var matchFontWeight:Object = "bold";
-
-    [Bindable]
-    public var matchTextAlpha:Number = 1;
-
-    [Bindable]
-    public var matchTextDecoration:Object = "none";
+    function get searchTerms():RegExp;
+    function set searchTerms(value:RegExp):void;
 
 }
 

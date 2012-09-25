@@ -130,7 +130,7 @@
 
                 <s:Scroller id="scroller" left="0" top="0" right="0" bottom="0" hasFocusableChildren="false"
                             minViewportInset="1">
-                    <s:DataGroup id="dataGroup" itemRenderer="spark.skins.spark.DefaultItemRenderer">
+                    <s:DataGroup id="dataGroup" itemRenderer="net.riastar.skins.spark.SuggestionItemRenderer">
                         <s:layout>
                             <s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedMinRowCount="1"
                                               requestedMaxRowCount="6"/>

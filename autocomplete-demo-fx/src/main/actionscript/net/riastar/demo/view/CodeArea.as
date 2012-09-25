@@ -48,10 +48,28 @@ public class CodeArea extends TextArea {
         if (!properties) return;
 
         var props:Array = ['<rs:AutoComplete dataProvider="{dp}"'];
-        if (properties.singleSelection) props.push('singleSelection="true"');
-        if (properties.maxChars) props.push('maxChars="' + properties.maxChars + '"');
-        if (properties.prompt && properties.prompt.length) props.push('prompt="' + properties.prompt + '"');
-        if (properties.restrict && properties.restrict.length) props.push('maxChars="' + properties.restrict + '"');
+
+        //properties
+        if (properties.singleSelection)
+            props.push('singleSelection="true"');
+        if (properties.maxChars)
+            props.push('maxChars="' + properties.maxChars + '"');
+        if (properties.prompt && properties.prompt.length)
+            props.push('prompt="' + properties.prompt + '"');
+        if (properties.restrict && properties.restrict.length)
+            props.push('maxChars="' + properties.restrict + '"');
+
+        //styles
+        if (properties.matchColor != 0xff0000)
+            props.push('matchColor="0x' + properties.matchColor.toString(16) + '"');
+        if (properties.matchFontStyle != "normal")
+            props.push('matchFontStyle="' + properties.matchFontStyle + '"');
+        if (properties.matchFontWeight != "bold")
+            props.push('matchFontWeight="' + properties.matchFontWeight + '"');
+        if (properties.matchTextAlpha != 1)
+            props.push('matchTextAlpha="' + properties.matchTextAlpha + '"');
+        if (properties.matchTextDecoration != "none")
+            props.push('matchTextDecoration="' + properties.matchTextDecoration + '"');
 
         text = props.join("\n                 ") + ' />';
     }

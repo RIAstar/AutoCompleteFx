@@ -66,13 +66,18 @@
                              singleSelection="{properties.singleSelection}"
                              maxChars="{properties.maxChars}"
                              prompt="{properties.prompt}"
-                             restrict="{properties.restrict}"/>
+                             restrict="{properties.restrict}"
+                             matchColor="{properties.matchColor}"
+                             matchFontStyle="{properties.matchFontStyle}"
+                             matchFontWeight="{properties.matchFontWeight}"
+                             matchTextAlpha="{properties.matchTextAlpha}"
+                             matchTextDecoration="{properties.matchTextDecoration}"/>
 
-            <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin" />
+            <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin"/>
         </s:HGroup>
 
         <v:CodeArea properties="{properties}" width="100%" height="50%"
-                    fontFamily="Courier new" color="0xffffff" contentBackgroundColor="0x272822" />
+                    fontFamily="Courier new" color="0xffffff" contentBackgroundColor="0x272822"/>
     </s:VGroup>
 
 </s:Application>

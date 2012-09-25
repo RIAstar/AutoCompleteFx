@@ -17,41 +17,96 @@
   -->
 
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
-        xmlns:s="library://ns.adobe.com/flex/spark">
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx">
 
     <fx:Metadata>
         [HostComponent("net.riastar.demo.view.PropertyPanel")]
     </fx:Metadata>
 
     <fx:Declarations>
-        <s:RadioButtonGroup id="singleSelectionRadio" selectedValue="@{hostComponent.singleSelection}" />
+        <s:RadioButtonGroup id="singleSelectionRadio" selectedValue="@{hostComponent.singleSelection}"/>
+        <s:RadioButtonGroup id="fontStyleRadio" selectedValue="@{hostComponent.matchFontStyle}"/>
+        <s:RadioButtonGroup id="fontWeightRadio" selectedValue="@{hostComponent.matchFontWeight}"/>
+        <s:RadioButtonGroup id="textDecorationRadio" selectedValue="@{hostComponent.matchTextDecoration}"/>
     </fx:Declarations>
 
     <s:layout>
-        <s:VerticalLayout gap="15" paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15"/>
+        <s:HorizontalLayout gap="25" paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15"/>
     </s:layout>
 
-    <s:VGroup>
-        <s:Label text="singleSelection" fontWeight="bold"/>
-        <s:HGroup>
-            <s:RadioButton label="true" value="{true}" groupName="singleSelectionRadio"/>
-            <s:RadioButton label="false" value="{false}" groupName="singleSelectionRadio"/>
-        </s:HGroup>
+    <s:VGroup gap="25">
+        <s:Label text="Properties" fontSize="16" fontWeight="bold"/>
+
+        <s:VGroup>
+            <s:Label text="singleSelection" fontWeight="bold"/>
+            <s:HGroup>
+                <s:RadioButton label="true" value="{true}" groupName="singleSelectionRadio"/>
+                <s:RadioButton label="false" value="{false}" groupName="singleSelectionRadio"/>
+            </s:HGroup>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="maxChars" fontWeight="bold"/>
+            <s:NumericStepper minimum="0" value="@{hostComponent.maxChars}"/>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="prompt" fontWeight="bold"/>
+            <s:TextInput text="@{hostComponent.prompt}"/>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="restrict" fontWeight="bold"/>
+            <s:TextInput text="@{hostComponent.restrict}"/>
+        </s:VGroup>
     </s:VGroup>
 
-    <s:VGroup>
-        <s:Label text="maxChars" fontWeight="bold"/>
-        <s:NumericStepper minimum="0" value="@{hostComponent.maxChars}" />
-    </s:VGroup>
+    <s:Line height="100%">
+        <s:stroke>
+            <s:SolidColorStroke color="0xdddddd"/>
+        </s:stroke>
+    </s:Line>
 
-    <s:VGroup>
-        <s:Label text="prompt" fontWeight="bold"/>
-        <s:TextInput text="@{hostComponent.prompt}" />
-    </s:VGroup>
+    <s:VGroup gap="25">
+        <s:Label text="Styles" fontSize="16" fontWeight="bold"/>
 
-    <s:VGroup>
-        <s:Label text="restrict" fontWeight="bold"/>
-        <s:TextInput text="@{hostComponent.restrict}" />
+        <s:VGroup>
+            <s:Label text="matchColor" fontWeight="bold"/>
+            <s:HGroup verticalAlign="bottom">
+                <mx:ColorPicker selectedColor="@{hostComponent.matchColor}"/>
+                <s:Label text="#{hostComponent.matchColor.toString(16)}" fontFamily="Courier New"/>
+            </s:HGroup>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="matchFontStyle" fontWeight="bold"/>
+            <s:HGroup>
+                <s:RadioButton label="normal" value="normal" groupName="fontStyleRadio"/>
+                <s:RadioButton label="italic" value="italic" groupName="fontStyleRadio"/>
+            </s:HGroup>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="matchFontWeight" fontWeight="bold"/>
+            <s:HGroup>
+                <s:RadioButton label="normal" value="normal" groupName="fontWeightRadio"/>
+                <s:RadioButton label="bold" value="bold" groupName="fontWeightRadio"/>
+            </s:HGroup>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="matchTextAlpha" fontWeight="bold"/>
+            <s:HSlider minimum=".1" maximum="1" stepSize=".1" value="@{hostComponent.matchTextAlpha}"/>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="matchTextDecoration" fontWeight="bold"/>
+            <s:HGroup>
+                <s:RadioButton label="none" value="none" groupName="textDecorationRadio"/>
+                <s:RadioButton label="underline" value="underline" groupName="textDecorationRadio"/>
+            </s:HGroup>
+        </s:VGroup>
     </s:VGroup>
 
 </s:Skin>

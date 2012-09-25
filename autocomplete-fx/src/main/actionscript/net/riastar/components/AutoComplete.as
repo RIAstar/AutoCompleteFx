@@ -27,6 +27,7 @@ import flashx.textLayout.operations.FlowOperation;
 
 import mx.collections.IList;
 import mx.collections.ListCollectionView;
+import mx.core.IVisualElement;
 import mx.core.mx_internal;
 import mx.events.CollectionEvent;
 import mx.events.FlexEvent;
@@ -48,6 +49,41 @@ use namespace mx_internal;
 /* -------------- */
 /* --- styles --- */
 /* -------------- */
+
+/**
+ * Color of the matched text.
+ *
+ * @default 0xff0000
+ */
+[Style(name="matchColor", type="uint", format="Color", inherit="yes")]
+
+/**
+ * Determines whether the matched text is italic font.
+ *
+ * @default normal
+ */
+[Style(name="matchFontStyle", type="String", enumeration="normal,italic", inherit="yes")]
+
+/**
+ * Determines whether the matched text is boldface.
+ *
+ * @default bold
+ */
+[Style(name="matchFontWeight", type="String", enumeration="normal,bold", inherit="yes")]
+
+/**
+ * Alpha (transparency) value for the matched text.
+ *
+ * @default 1.0
+ */
+[Style(name="matchTextAlpha", type="Number", inherit="yes", minValue="0.0", maxValue="1.0")]
+
+/**
+ * Determines whether the matched text is underlined.
+ *
+ * @default none
+ */
+[Style(name="matchTextDecoration", type="String", enumeration="none,underline", inherit="yes")]
 
 /**
  *  Bottom inset, in pixels, for the text in the prompt area of the control.
@@ -255,6 +291,8 @@ public class AutoComplete extends DropDownListBase {
 
     /** The number of words that have to be matched for an item to show up as a suggestion. */
     private var numSearchTerms:int;
+
+    private var searchRegex:RegExp;
 
     /** Whether the <code>textInput</code> currently has focus: determines how keyboard input will be handled. */
     private var isTextInputInFocus:Boolean;
@@ -493,10 +531,14 @@ public class AutoComplete extends DropDownListBase {
         if (!text) text = "";
         text = StringUtil.trim(text);
 
-        if (text == "") numSearchTerms = 0;
+        if (text == "") {
+            numSearchTerms = 0;
+            searchRegex = null;
+        }
         else {
             searchTerms = Vector.<String>(text.split(/\s+/g));
             numSearchTerms = searchTerms.length;
+            searchRegex = searchTerms && searchTerms.length ? new RegExp(searchTerms.join("|"), "gi") : null;
         }
 
         if (suggestionView) suggestionView.refresh();
@@ -659,22 +701,33 @@ public class AutoComplete extends DropDownListBase {
      */
     override protected function commitProperties():void {
         super.commitProperties();
+        if (!textInput) return;
 
-        if (textInput && textInputPropertyChanged) {
+        if (textInputPropertyChanged) {
+            textInputPropertyChanged = false;
+
             textInput.maxChars = _maxChars;
             textInput.prompt = _prompt;
             textInput.restrict = _restrict;
-
-            textInputPropertyChanged = false;
         }
 
-        if (textInput && markedForReset) {
+        if (markedForReset) {
+            markedForReset = false;
+
             textInput.text = "";
             processText("");
             highlightFirst();
-
-            markedForReset = false;
         }
+    }
+
+    /**
+     * Update the item renderers with the regular expression.
+     *
+     * @inheritDoc
+     */
+    override public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
+        super.updateRenderer(renderer, itemIndex, data);
+        if (renderer is ISuggestionRenderer) ISuggestionRenderer(renderer).searchTerms = searchRegex;
     }
 
     /**
