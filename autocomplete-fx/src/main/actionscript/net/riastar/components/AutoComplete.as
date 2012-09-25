@@ -410,12 +410,12 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * When <code>textInput.text</code> changes, process the text operation.
+     * When <code>textInput.text</code> changes, start showing suggestions.
      *
      * @param event
      */
     private function textInputChangeHandler(event:TextOperationEvent):void {
-        processTextOperation(event.operation);
+        startSuggesting();
     }
 
     /**
@@ -511,12 +511,10 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * Processes all kinds of text operations: when text is removed (delete, cut) the first item is highlighted,
-     * otherwise the dropdown is opened and the text processed.
-     *
-     * @param operation The text operation to be processed.
+     * Opens the dropdown and processes the user input to display matching suggestions.
+     * In <code>singleSelection</code> mode the selected item is reset from the moment the user starts typing.
      */
-    protected function processTextOperation(operation:FlowOperation):void {
+    protected function startSuggesting():void {
         if (!isDropDownOpen) openDropDown();
         if (_singleSelection && selectedIndex > -1) setSelectedIndices(null, true);
         processText(textInput.text);
