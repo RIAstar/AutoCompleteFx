@@ -19,6 +19,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:rs="library://ns.riastar.net/flex"
+               xmlns:m="net.riastar.demo.view.model.*"
                xmlns:v="net.riastar.demo.view.*"
                minWidth="955" minHeight="600">
 
@@ -74,6 +75,18 @@
                              matchTextDecoration="{properties.matchTextDecoration}" />
 
             <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin"/>
+
+            <s:DataGrid editable="true">
+                <s:columns>
+                    <s:ArrayList>
+                        <s:GridColumn dataField="numberString" itemEditor="net.riastar.demo.view.NumberGridItemEditor" />
+                    </s:ArrayList>
+                </s:columns>
+
+                <s:ArrayList>
+                    <m:GridItem />
+                </s:ArrayList>
+            </s:DataGrid>
         </s:HGroup>
 
         <v:CodeArea properties="{properties}" width="100%" height="50%"
