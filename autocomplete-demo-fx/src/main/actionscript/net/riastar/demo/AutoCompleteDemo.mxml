@@ -71,7 +71,7 @@
                              matchFontStyle="{properties.matchFontStyle}"
                              matchFontWeight="{properties.matchFontWeight}"
                              matchTextAlpha="{properties.matchTextAlpha}"
-                             matchTextDecoration="{properties.matchTextDecoration}"/>
+                             matchTextDecoration="{properties.matchTextDecoration}" />
 
             <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin"/>
         </s:HGroup>

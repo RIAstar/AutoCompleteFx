@@ -23,8 +23,6 @@ import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 
-import flashx.textLayout.operations.FlowOperation;
-
 import mx.collections.IList;
 import mx.collections.ListCollectionView;
 import mx.core.IVisualElement;
@@ -151,11 +149,27 @@ public class AutoComplete extends DropDownListBase {
      */
     public var textInput:SkinnableTextBase;
 
+    private var _selectionList:List;
     [SkinPart(required="false")]
     /**
      * Optional skin part that displays the selected items.
+     * Note that you can also set a List defined outside the component here.
+     * This external List will then replace the <code>selectionList</code> defined in the skin (if any)
+     * and display a similar behaviour, except it will not be automatically hidden when no values are selected;
+     * it is up to the developer to decide whether he wants this behaviour or not.
      */
-    public var selectionList:List;
+    public function get selectionList():List {
+        return _selectionList;
+    }
+    public function set selectionList(value:List):void {
+        if (!isExternalSelectionList) {
+            destroySelectionList();
+            _selectionList = value;
+            initializeSelectionList();
+        }
+
+        if (value && !skin) isExternalSelectionList = true;
+    }
 
 
     /* ------------------------- */
@@ -292,6 +306,10 @@ public class AutoComplete extends DropDownListBase {
     /** The number of words that have to be matched for an item to show up as a suggestion. */
     private var numSearchTerms:int;
 
+    /**
+     * A regular expression that matches all the search terms.
+     * It is used in the ItemRenderers to highlight the matched terms, but stored here to limit instantiation.
+     */
     private var searchRegex:RegExp;
 
     /** Whether the <code>textInput</code> currently has focus: determines how keyboard input will be handled. */
@@ -299,6 +317,9 @@ public class AutoComplete extends DropDownListBase {
 
     /** A flag that determines whether the user input will be cleared in <code>commitProperties()</code>. */
     private var markedForReset:Boolean;
+
+    /** Whether the <code>selectionList</code> was created outside the component or is part of then skin. */
+    private var isExternalSelectionList:Boolean;
 
 
     /* -------------------- */
@@ -336,12 +357,11 @@ public class AutoComplete extends DropDownListBase {
      * Track user selection.
      */
     protected function initializeSelectionList():void {
-        if (!selectionList) return;
+        if (!_selectionList) return;
 
-        selectionList.dataProvider = selectionView;
-        selectionList.focusEnabled = false;
-        selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
-        selectionList.addEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
+        _selectionList.dataProvider = selectionView;
+        _selectionList.focusEnabled = false;
+        _selectionList.addEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
 
         selectionView.refresh();
     }
@@ -353,7 +373,7 @@ public class AutoComplete extends DropDownListBase {
             case textInput:
                 initializeTextInput();
                 break;
-            case selectionList:
+            case _selectionList:
                 initializeSelectionList();
                 break;
         }
@@ -639,7 +659,7 @@ public class AutoComplete extends DropDownListBase {
      * @param index The index to be removed.
      */
     protected function removeSelectedIndex(index:int):void {
-        selectionList.selectedIndices = null; //don't do `selectedIndex = -1`: it will be overridden internally
+        _selectionList.selectedIndices = null; //don't do `selectedIndex = -1`: it will be overridden internally
         setSelectedIndices(calculateSelectedIndicesAfterRemoval(index), true);
     }
 
@@ -760,9 +780,13 @@ public class AutoComplete extends DropDownListBase {
     /**
      * @return <code>DropDownListBase</code>'s current skin state (<code>normal,open,disabled</code>),
      * appended with <code>"WithSelection"</code> if there are any selected items in multi-select mode.
+     * If an external List was provided, we never show the selection list defined in the skin.
      */
     override protected function getCurrentSkinState():String {
-        return super.getCurrentSkinState() + (!singleSelection && selectionView && selectionView.length ? "WithSelection" : "");
+        var state:String = super.getCurrentSkinState();
+        if (!singleSelection && !isExternalSelectionList && selectionView && selectionView.length)
+            state += "WithSelection";
+        return state;
     }
 
 
@@ -775,7 +799,7 @@ public class AutoComplete extends DropDownListBase {
             case textInput:
                 destroyTextInput();
                 break;
-            case selectionList:
+            case _selectionList:
                 destroySelectionList();
                 break;
         }
@@ -787,6 +811,8 @@ public class AutoComplete extends DropDownListBase {
      * Stop tracking text changes and focus events in the <code>textInput</code>.
      */
     protected function destroyTextInput():void {
+        if (!textInput) return;
+
         textInput.removeEventListener(TextOperationEvent.CHANGE, textInputChangeHandler);
         textInput.removeEventListener(FocusEvent.FOCUS_IN, textInputFocusInHandler, true);
         textInput.removeEventListener(FocusEvent.FOCUS_OUT, textInputFocusOutHandler, true);
@@ -796,7 +822,7 @@ public class AutoComplete extends DropDownListBase {
      * Stop tracking user selection.
      */
     protected function destroySelectionList():void {
-        selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
+        if (_selectionList) _selectionList.removeEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
     }
 
 }
