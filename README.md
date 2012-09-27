@@ -11,9 +11,11 @@ For consistency with the Spark theme, AutoCompleteFx' default skin looks exactly
  - matches multiple words in the search query
  - fully compatible with other List-like components
  - highlight matched text + styles for the highlighted section
+ - selection list can be defined outside the component (will override the one in the default skin)
 
 ###Planned features
- - selection list can be defined outside the component (will override the one in the default skin)
+ - possibility to set search rules (match all, match any, ...)
+ - suggestions ordered by scoring algorithm
  - optionally sort selection list in the same order as the `dataProvider` (default = selection order)
  - optional automatic creation of items when submitting items that don't exist in the `dataProvider`
  - GridItemRenderer implementation
