@@ -39,10 +39,12 @@ import spark.components.supportClasses.SkinnableTextBase;
 import spark.events.DropDownEvent;
 import spark.events.IndexChangeEvent;
 import spark.events.TextOperationEvent;
+import spark.layouts.supportClasses.LayoutBase;
 
 
 use namespace mx_internal;
 
+[Exclude(name="allowMultipleSelection", kind="property")]
 
 /* -------------- */
 /* --- styles --- */
@@ -252,6 +254,20 @@ public class AutoComplete extends DropDownListBase {
         return true;
     }
 
+    override public function get selectedIndices():Vector.<int> {
+        return super.selectedIndices;
+    }
+    override public function set selectedIndices(value:Vector.<int>):void {
+        super.selectedIndices = value;
+    }
+
+    override public function get selectedItems():Vector.<Object> {
+        return super.selectedItems;
+    }
+    override public function set selectedItems(value:Vector.<Object>):void {
+        super.selectedItems = value;
+    }
+
 
     /* -------------------------------------- */
     /* --- wrapped 'textInput' properties --- */
@@ -292,6 +308,24 @@ public class AutoComplete extends DropDownListBase {
     public function set restrict(value:String):void {
         _restrict = value;
         textInputPropertyChanged = true;
+        invalidateProperties();
+    }
+
+
+    /* ------------------------------------------ */
+    /* --- wrapped 'selectionList' properties --- */
+    /* ------------------------------------------ */
+
+    private var selectionListPropertyChanged:Boolean = false;
+
+    private var _selectionLayout:LayoutBase;
+    [Inspectable(category="General")]
+    public function get selectionLayout():LayoutBase {
+        return _selectionLayout;
+    }
+    public function set selectionLayout(value:LayoutBase):void {
+        _selectionLayout = value;
+        selectionListPropertyChanged = true;
         invalidateProperties();
     }
 
@@ -724,6 +758,13 @@ public class AutoComplete extends DropDownListBase {
      */
     override protected function commitProperties():void {
         super.commitProperties();
+
+        if (selectionList && selectionListPropertyChanged) {
+            selectionListPropertyChanged = false;
+
+            selectionList.layout = _selectionLayout;
+        }
+
         if (!textInput) return;
 
         if (textInputPropertyChanged) {

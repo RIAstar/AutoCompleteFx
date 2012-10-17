@@ -41,6 +41,14 @@
         </s:ArrayCollection>
     </fx:Declarations>
 
+    <fx:Script><![CDATA[
+        [Bindable]
+        private var test:Vector.<int> = Vector.<int>([2,3]);
+
+        [Bindable]
+        private var test2:Vector.<Object> = Vector.<Object>(["eightteen", "twentyone"]);
+        ]]></fx:Script>
+
     <s:layout>
         <s:HorizontalLayout/>
     </s:layout>
@@ -63,7 +71,7 @@
         </s:Line>
 
         <s:HGroup>
-            <rs:AutoComplete id="ac" dataProvider="{dp}"
+            <rs:AutoComplete id="ac" dataProvider="{dp}" selectedIndices="{test}"
                              singleSelection="{properties.singleSelection}"
                              maxChars="{properties.maxChars}"
                              prompt="{properties.prompt}"
