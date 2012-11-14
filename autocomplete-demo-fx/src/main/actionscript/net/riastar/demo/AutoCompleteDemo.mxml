@@ -73,6 +73,7 @@
         <s:HGroup>
             <rs:AutoComplete id="ac" dataProvider="{dp}" selectedIndices="{test}"
                              singleSelection="{properties.singleSelection}"
+                             displayOpenButton="{properties.displayOpenButton}"
                              maxChars="{properties.maxChars}"
                              prompt="{properties.prompt}"
                              restrict="{properties.restrict}"
@@ -80,19 +81,19 @@
                              matchFontStyle="{properties.matchFontStyle}"
                              matchFontWeight="{properties.matchFontWeight}"
                              matchTextAlpha="{properties.matchTextAlpha}"
-                             matchTextDecoration="{properties.matchTextDecoration}" />
+                             matchTextDecoration="{properties.matchTextDecoration}"/>
 
             <v:SelectionPropertyDisplay list="{ac}" skinClass="net.riastar.demo.skin.SelectionPropertyDisplaySkin"/>
 
             <s:DataGrid editable="true">
                 <s:columns>
                     <s:ArrayList>
-                        <s:GridColumn dataField="numberString" itemEditor="net.riastar.demo.view.NumberGridItemEditor" />
+                        <s:GridColumn dataField="numberString" itemEditor="net.riastar.demo.view.NumberGridItemEditor"/>
                     </s:ArrayList>
                 </s:columns>
 
                 <s:ArrayList>
-                    <m:GridItem />
+                    <m:GridItem/>
                 </s:ArrayList>
             </s:DataGrid>
         </s:HGroup>

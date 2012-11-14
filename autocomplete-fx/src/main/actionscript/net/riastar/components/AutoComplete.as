@@ -254,6 +254,21 @@ public class AutoComplete extends DropDownListBase {
         return true;
     }
 
+    private var _displayOpenButton:Boolean = true;
+    /**
+     * Whether <code>DropDownListBase</code>'s <code>openButton</code> must be displayed or not.
+     * Since it is shown by default, an <code>AutoComplete</code> look exactly like a <code>DropDownList</code>.
+     *
+     * @default true
+     */
+    public function get displayOpenButton():Boolean {
+        return _displayOpenButton;
+    }
+    public function set displayOpenButton(value:Boolean):void {
+        _displayOpenButton = value;
+        invalidateProperties();
+    }
+
     override public function get selectedIndices():Vector.<int> {
         return super.selectedIndices;
     }
@@ -765,6 +780,7 @@ public class AutoComplete extends DropDownListBase {
             selectionList.layout = _selectionLayout;
         }
 
+        if (openButton) openButton.visible = openButton.includeInLayout = _displayOpenButton;
         if (!textInput) return;
 
         if (textInputPropertyChanged) {
@@ -795,7 +811,9 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * Whenever the selection changes, update the <code>selectionView</code> and reset the user input.
+     * Whenever the selection changes, update the
+     <code>selectionView</code>
+     and reset the user input.
      *
      * @inheritDoc
      */
@@ -819,8 +837,14 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * @return <code>DropDownListBase</code>'s current skin state (<code>normal,open,disabled</code>),
-     * appended with <code>"WithSelection"</code> if there are any selected items in multi-select mode.
+     * @return
+            <code>DropDownListBase</code>
+     's current skin state (
+     <code>normal,open,disabled</code>
+     ),
+     * appended with
+     <code>"WithSelection"</code>
+     if there are any selected items in multi-select mode.
      * If an external List was provided, we never show the selection list defined in the skin.
      */
     override protected function getCurrentSkinState():String {
@@ -849,7 +873,9 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * Stop tracking text changes and focus events in the <code>textInput</code>.
+     * Stop tracking text changes and focus events in the
+     <code>textInput</code>
+     .
      */
     protected function destroyTextInput():void {
         if (!textInput) return;
@@ -867,5 +893,4 @@ public class AutoComplete extends DropDownListBase {
     }
 
 }
-
 }

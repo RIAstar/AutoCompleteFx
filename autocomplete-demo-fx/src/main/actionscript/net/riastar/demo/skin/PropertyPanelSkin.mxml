@@ -26,6 +26,7 @@
 
     <fx:Declarations>
         <s:RadioButtonGroup id="singleSelectionRadio" selectedValue="@{hostComponent.singleSelection}"/>
+        <s:RadioButtonGroup id="displayOpenButtonRadio" selectedValue="@{hostComponent.displayOpenButton}"/>
         <s:RadioButtonGroup id="fontStyleRadio" selectedValue="@{hostComponent.matchFontStyle}"/>
         <s:RadioButtonGroup id="fontWeightRadio" selectedValue="@{hostComponent.matchFontWeight}"/>
         <s:RadioButtonGroup id="textDecorationRadio" selectedValue="@{hostComponent.matchTextDecoration}"/>
@@ -43,6 +44,14 @@
             <s:HGroup>
                 <s:RadioButton label="true" value="{true}" groupName="singleSelectionRadio"/>
                 <s:RadioButton label="false" value="{false}" groupName="singleSelectionRadio"/>
+            </s:HGroup>
+        </s:VGroup>
+
+        <s:VGroup>
+            <s:Label text="displayOpenButton" fontWeight="bold"/>
+            <s:HGroup>
+                <s:RadioButton label="true" value="{true}" groupName="displayOpenButtonRadio"/>
+                <s:RadioButton label="false" value="{false}" groupName="displayOpenButtonRadio"/>
             </s:HGroup>
         </s:VGroup>
 

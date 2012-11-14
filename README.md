@@ -13,6 +13,7 @@ For consistency with the Spark theme, AutoCompleteFx' default skin looks exactly
  - highlight matched text + styles for the highlighted section
  - selection list can be defined outside the component (will override the one in the default skin)
  - GridItemRenderer implementation
+ - hide/show the `openButton` that is present by default in DropDownListBase
 
 ###Planned features
  - possibility to set search rules (match all, match any, ...)

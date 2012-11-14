@@ -52,6 +52,8 @@ public class CodeArea extends TextArea {
         //properties
         if (properties.singleSelection)
             props.push('singleSelection="true"');
+        if (!properties.displayOpenButton)
+            props.push('displayOpenButton="false"');
         if (properties.maxChars)
             props.push('maxChars="' + properties.maxChars + '"');
         if (properties.prompt && properties.prompt.length)
