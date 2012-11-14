@@ -252,6 +252,21 @@ public class AutoComplete extends DropDownListBase {
         return true;
     }
 
+    private var _displayOpenButton:Boolean = true;
+    /**
+     * Whether <code>DropDownListBase</code>'s <code>openButton</code> must be displayed or not.
+     * Since it is shown by default, an <code>AutoComplete</code> look exactly like a <code>DropDownList</code>.
+     *
+     * @default true
+     */
+    public function get displayOpenButton():Boolean {
+        return _displayOpenButton;
+    }
+    public function set displayOpenButton(value:Boolean):void {
+        _displayOpenButton = value;
+        invalidateProperties();
+    }
+
 
     /* -------------------------------------- */
     /* --- wrapped 'textInput' properties --- */
@@ -724,6 +739,8 @@ public class AutoComplete extends DropDownListBase {
      */
     override protected function commitProperties():void {
         super.commitProperties();
+
+        if (openButton) openButton.visible = openButton.includeInLayout = _displayOpenButton;
         if (!textInput) return;
 
         if (textInputPropertyChanged) {

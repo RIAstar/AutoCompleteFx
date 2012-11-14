@@ -31,6 +31,9 @@ public class PropertyPanel extends SkinnableComponent {
     public var singleSelection:Boolean;
 
     [Bindable]
+    public var displayOpenButton:Boolean = true;
+
+    [Bindable]
     public var maxChars:int = 0;
 
     [Bindable]
