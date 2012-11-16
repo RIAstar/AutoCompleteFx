@@ -41,13 +41,15 @@
         </s:ArrayCollection>
     </fx:Declarations>
 
-    <fx:Script><![CDATA[
+    <fx:Script>
+        <![CDATA[
         [Bindable]
-        private var test:Vector.<int> = Vector.<int>([2,3]);
+        private var test:Vector.<int> = Vector.<int>([2, 3]);
 
         [Bindable]
         private var test2:Vector.<Object> = Vector.<Object>(["eightteen", "twentyone"]);
-        ]]></fx:Script>
+        ]]>
+    </fx:Script>
 
     <s:layout>
         <s:HorizontalLayout/>

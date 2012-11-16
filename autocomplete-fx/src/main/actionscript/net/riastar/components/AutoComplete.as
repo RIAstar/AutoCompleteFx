@@ -214,6 +214,7 @@ public class AutoComplete extends DropDownListBase {
 
             selectionView = new ListCollectionView(value);
             selectionView.filterFunction = isSelected;
+            selectionView.refresh();
             initializeSelectionList();
 
             originalData.addEventListener(CollectionEvent.COLLECTION_CHANGE, originalDataChangeHandler, false, 0, true);
@@ -411,8 +412,6 @@ public class AutoComplete extends DropDownListBase {
         _selectionList.dataProvider = selectionView;
         _selectionList.focusEnabled = false;
         _selectionList.addEventListener(IndexChangeEvent.CHANGE, selectionIndexChangeHandler);
-
-        selectionView.refresh();
     }
 
     override protected function partAdded(partName:String, instance:Object):void {
@@ -811,9 +810,7 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * Whenever the selection changes, update the
-     <code>selectionView</code>
-     and reset the user input.
+     * Whenever the selection changes, update the <code>selectionView</code> and reset the user input.
      *
      * @inheritDoc
      */
@@ -837,14 +834,8 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * @return
-            <code>DropDownListBase</code>
-     's current skin state (
-     <code>normal,open,disabled</code>
-     ),
-     * appended with
-     <code>"WithSelection"</code>
-     if there are any selected items in multi-select mode.
+     * @return <code>DropDownListBase</code>'s current skin state (<code>normal,open,disabled</code>),
+     * appended with <code>"WithSelection"</code> if there are any selected items in multi-select mode.
      * If an external List was provided, we never show the selection list defined in the skin.
      */
     override protected function getCurrentSkinState():String {
@@ -873,9 +864,7 @@ public class AutoComplete extends DropDownListBase {
     }
 
     /**
-     * Stop tracking text changes and focus events in the
-     <code>textInput</code>
-     .
+     * Stop tracking text changes and focus events in the <code>textInput</code>.
      */
     protected function destroyTextInput():void {
         if (!textInput) return;
