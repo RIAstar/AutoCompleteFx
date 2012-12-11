@@ -270,6 +270,15 @@ public class AutoComplete extends DropDownListBase {
         invalidateProperties();
     }
 
+    /**
+     * Make sure FormItem labels are aligned properly to the textInput's text.
+     *
+     * @private
+     */
+    override public function get baselinePosition():Number {
+        return textInput.baselinePosition;
+    }
+
     override public function get selectedIndices():Vector.<int> {
         return super.selectedIndices;
     }
