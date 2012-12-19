@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <componentPackage>
 
-	<component id="AutoComplete" class="net.riastar.components.AutoComplete" />
+    <component id="AutoComplete" class="net.riastar.components.AutoComplete"/>
 
 </componentPackage>
