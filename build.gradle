@@ -1,16 +1,8 @@
 import org.apache.ivy.plugins.resolver.URLResolver
 
 buildscript {
-    repositories {
-		mavenLocal()
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
+    repositories.mavenCentral()
     dependencies.classpath 'org.gradlefx:gradlefx:0.6.2'
-
-    /*configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }*/
 }
 
 task wrapper(type: Wrapper) {
