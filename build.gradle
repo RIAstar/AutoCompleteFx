@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
-    dependencies.classpath 'org.gradlefx:gradlefx:0.6.1'
+    dependencies.classpath 'org.gradlefx:gradlefx:0.6.2'
 
     /*configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -24,12 +24,12 @@ subprojects { subproject ->
 	repositories {
 		add(new URLResolver()) {
 			name = 'Apache'
-			addArtifactPattern 'http://apache.cu.be/incubator/flex/4.8.0-incubating/binaries/[module]-[revision]-incubating-bin.[ext]'
+			addArtifactPattern 'http://apache.cu.be/flex/4.9.0/binaries/[module]-[revision]-bin.[ext]'
 		}
 	}
 
 	dependencies {
-		flexSDK 'org.apache:apache-flex-sdk:4.8.0@zip'
+		flexSDK 'org.apache:apache-flex-sdk:4.9.0@zip'
 	}
 
 	sdkAutoInstall {
