@@ -1,4 +1,5 @@
 type = 'swc'
+version = 'SNAPSHOT'
 
 def namespace = 'library://ns.riastar.net/flex'
 
