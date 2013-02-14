@@ -37,7 +37,7 @@ subprojects { subproject ->
 }
 
 gradle.afterProject { project ->
-    if (project.hasProperty('type') && project.type.isLib()) {
+    if (project.metaClass.hasProperty(project, 'type') && project.type.isLib()) {
         project.uploadArchives {
             repositories.mavenDeployer {
                 repository url: "file://${System.getProperty('user.home')}/.m2/repository/"
