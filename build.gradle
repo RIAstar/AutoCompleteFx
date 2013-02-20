@@ -2,7 +2,7 @@ import org.apache.ivy.plugins.resolver.URLResolver
 
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath 'org.gradlefx:gradlefx:0.6.3'
+    dependencies.classpath 'org.gradlefx:gradlefx:0.6.4'
 }
 
 task wrapper(type: Wrapper) {
