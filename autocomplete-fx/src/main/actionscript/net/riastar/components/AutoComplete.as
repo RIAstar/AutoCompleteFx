@@ -642,8 +642,13 @@ public class AutoComplete extends DropDownListBase {
      * @return Whether the item can be suggested or not.
      */
     protected function canSuggest(item:*):Boolean {
-        //filter out already selected items
-        if (selectedItems.indexOf(item) != -1) return false;
+        try {
+            //filter out already selected items
+            if (selectedItems.indexOf(item) != -1) return false;
+        }
+        catch (e:Error) {
+            //someone is trying to reset and refresh at the same time: swallow nullpointers
+        }
 
         //show all remaining items when there is no user input
         if (!numSearchTerms) return true;
@@ -668,7 +673,14 @@ public class AutoComplete extends DropDownListBase {
      * @return Whether the item can be shown in the <code>selectionList</code> or not.
      */
     protected function isSelected(item:*):Boolean {
-        return selectedItems.indexOf(item) != -1;
+        try {
+            return selectedItems.indexOf(item) != -1;
+        }
+        catch (e:Error) {
+            //someone is trying to reset and refresh at the same time: swallow nullpointers
+        }
+
+        return false;
     }
 
     /**
